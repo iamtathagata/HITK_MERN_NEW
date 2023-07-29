@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import './StudentLogin.css';
-import { NavLink } from "react-router-dom";
 import { getUsersdata } from "../service/api";
 import { useNavigate } from "react-router-dom"; // Import the getUsersdata function
 
-const StudentLogin = () => {
+const PaymentVerify = () => {
     const navigate = useNavigate();
 
     const [user, setUser] = useState({
@@ -18,7 +17,6 @@ const StudentLogin = () => {
         setUser({ ...user, [e.target.name]: e.target.value });
     }
 
-    // ... Other code ...
 
 const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,7 +27,7 @@ const handleLogin = async (e) => {
   
       if (userData && userData.pass === user.userpassword) {
         console.log("Login Successful!");
-        navigate('/StudentDashboard', { state: { user: userData } }); // Pass user data as state
+        navigate('/know', { state: { user: userData } }); // Pass user data as state
       } else {
         console.log("Login Failed. Invalid credentials.");
         setLoginFailed(true);
@@ -76,19 +74,6 @@ const handleLogin = async (e) => {
                                     {loginFailed && <p>Login Failed. Please check your credentials.</p>}
                                 </div>
                             </div>
-                            <hr></hr>
-                            <div className="row">
-                                <div className="col-12 col-md-12 form-filed">
-                                    <h6>If You Don't Have Any Account Register First</h6>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-12">
-                                    <div className="submit-btn">
-                                        <NavLink to={'/Admission'} className={'btn-submit'}>Register Here</NavLink>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </form>
                 </div>
@@ -97,4 +82,4 @@ const handleLogin = async (e) => {
     )
 }
 
-export default StudentLogin;
+export default PaymentVerify;

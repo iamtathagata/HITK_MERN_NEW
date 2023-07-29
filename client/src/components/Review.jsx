@@ -7,11 +7,11 @@ import { NavLink } from "react-router-dom";
 
 function Review() {
   return (
-    <div className="review">
+    <div className="review" >
       <h3><NavLink to="https://www.heritageit.edu/PDF/Informtion_Brochure_2022.pdf" target="_blank" style={{color:"black"}}>The Heritage Group</NavLink></h3>
       <h1>College Review</h1>
       <p>HITK offers a vibrant college experience preparing students for a successful future</p>
-      <div className="reviewcard">
+      <div className="reviewcard" >
         <ReviewData
           image={Review1}
           heading="Review From Guests"

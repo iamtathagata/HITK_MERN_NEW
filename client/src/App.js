@@ -35,8 +35,19 @@ import StudentLogin from "./components/StudentLogin";
 import Classroutine from "./components/Classroutine";
 import Adminloginform from "./components/Adminloginform";
 import Know from "./components/Know";
-import UserDashboard from "./components/UserDashboard";
+// import UserDashboard from "./components/UserDashboard";
+import CanteenPayment from "./components/CanteenPayment";
+import EditStudent from "./components/EditStudent";
+
+import Dashborad from "./components/Dashborad";
+import Profile from "./components/Profile";
+import PaymentVerify from "./components/PaymentVerify";
+import StudentVerify from "./components/StudentVerify";
+
 import { Route, Routes } from "react-router-dom";
+import Main from "./components/Main";
+
+
 
 function App() {
   return (
@@ -78,8 +89,19 @@ function App() {
         <Route path="/Adminloginform" element={<Adminloginform />}></Route>
         
         <Route path="/know" element={<Know />}></Route>
-        <Route path="/user-dashboard" element={<UserDashboard />} ></Route>
+        {/* <Route path="/user-dashboard" element={<UserDashboard />} ></Route> */}
         <Route path="/ulogin" element={<StudentLogin />} ></Route>
+        <Route path="/canteenpayment" element={<CanteenPayment />}/>
+        <Route path="/EditStudent/:id" element={<EditStudent />} />
+
+
+
+        <Route path="/StudentDashboard" element={<Dashborad/>}></Route>
+        <Route path="/StudentDashboard/Profile" element={<Profile/>}></Route>
+        <Route path="/StudentDashboard/Home" element={<Dashborad/>}></Route>
+        <Route path="/PaymentVerify" element={<PaymentVerify />}></Route>
+        <Route path="/StudentVerify" element={<StudentVerify />}></Route>
+        <Route path="/Main" element={<Main />}></Route>
       </Routes>
     </div>
   );

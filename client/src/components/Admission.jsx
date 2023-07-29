@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './AdmissionStyle.css';
 import { NavLink } from "react-router-dom";
-import { addUser } from "../service/api.js";
+import { addUser, checkUsernameAvailability } from "../service/api.js";
 import { ChakraProvider, useToast } from '@chakra-ui/react'
 
 
@@ -30,12 +30,29 @@ const Admission = () => {
         course: '',
         department: '',
         roll: '',
-        adate: ''
+        adate: '',
+
     })
 
     const fileData = (e) => {
-        setUser({ ...user, image: e.target.files[0] });
-    }
+        const imageFile = e.target.files[0];
+
+        // Check if the file size is within 500KB (500 * 1024 bytes)
+        if (imageFile.size > 500 * 1024) {
+            alert("Image size should be within 500KB.");
+            return;
+        }
+
+        // Check if the file extension is either jpg or jpeg
+        const allowedExtensions = /(\.jpg|\.jpeg)$/i;
+        if (!allowedExtensions.test(imageFile.name)) {
+            alert("Only JPG or JPEG images are allowed.");
+            return;
+        }
+
+        setUser({ ...user, image: imageFile });
+    };
+
 
     const onValueChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
@@ -48,6 +65,73 @@ const Admission = () => {
         e.preventDefault();
 
         const { image, name, fname, mname, dob, mobile, email, gender, rel, uname, pass, street, post, police, dist, state, pin, course, department, roll, adate } = user
+
+        // Check username availability
+        const usernameAvailable = await checkUsernameAvailability({ uname: user.uname });
+        if (!usernameAvailable.available) {
+            alert("Username is already taken. Please choose a different username.");
+            return;
+        }
+
+        // Check if the roll number is a 6-digit number
+        if (!/^\d{6}$/.test(user.roll)) {
+            alert("Roll number must be a 6-digit number.");
+            return;
+        }
+
+        // Validate mobile number for Indian numbers and 10-digit length
+        const mobileRegex = /^[6-9]\d{9}$/;
+        if (!mobileRegex.test(mobile)) {
+            alert("Enter a valid 10-digit Indian mobile number");
+            return;
+        }
+
+        // Check for 6-digit pin code
+        const pinRegex = /^\d{6}$/;
+        if (!pinRegex.test(pin)) {
+            alert("Pin code must be 6 digits.");
+            return;
+        }
+
+        // Check for valid email address
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        // Check if the date of birth is before today's date
+        const today = new Date();
+        const selectedDOB = new Date(dob);
+        if (selectedDOB >= today) {
+            alert("Date of birth should be before today's date.");
+            return;
+        }
+
+        // Calculate the minimum admission date based on the date of birth
+        const dateOfBirth = new Date(dob);
+        const minAdmissionDate = new Date(dateOfBirth);
+        minAdmissionDate.setFullYear(dateOfBirth.getFullYear() + 17);
+
+        // Check if the selected admission date is at least 17 years after the date of birth
+        const selectedAdmissionDate = new Date(adate);
+        if (selectedAdmissionDate < minAdmissionDate) {
+            alert("Admission date should be at least 17 years after the date of birth.");
+            return;
+        }
+
+        // Check if the selected admission date is after today's date
+        if (selectedAdmissionDate > today) {
+            alert("Admission date cannot be after today's date.");
+            return;
+        }
+
+        // Change the image file name to username.extension
+        const username = user.uname;
+        const originalFileName = user.image.name;
+        const fileExtension = originalFileName.split('.').pop();
+        const newFileName = `${username}.${fileExtension}`;
+        const renamedImageFile = new File([user.image], newFileName, { type: user.image.type });
 
         if (!name) {
             alert("Enter Your Name");
@@ -96,7 +180,7 @@ const Admission = () => {
 
             const formData = new FormData();
 
-            formData.append('image', user.image)
+            formData.append('image', renamedImageFile);
             formData.append('name', user.name)
             formData.append('fname', user.fname)
             formData.append('mname', user.mname)
@@ -244,7 +328,7 @@ const Admission = () => {
                                 </div>
                             </div>
                         </div>
-                        
+
 
 
                         <div className="container m-0 p-0">
@@ -313,22 +397,22 @@ const Admission = () => {
                                     <label for="exampleFormControlSelect1">Department<span style={{ color: 'red' }}>*</span></label>
                                     <select class="form-control" name="department" onChange={onValueChange} id="exampleFormControlSelect1">
                                         <option selected value={''}>--Select Select--</option>
-                                        <option value={'cse'}>Computer Science & Engineering (CSE)</option>
-                                        <option value={'cse-aiml'}>Computer Science & Engineering (Artificial Intelligence
+                                        <option value={'CSE'}>Computer Science & Engineering (CSE)</option>
+                                        <option value={'CSE-AIML'}>Computer Science & Engineering (Artificial Intelligence
                                             and Machine Learning) (CSE - AI & ML)</option>
-                                        <option value={'cse-iotcs'}>Computer Science & Engineering (IoT & Cyber Security
+                                        <option value={'CSE-IOTCS'}>Computer Science & Engineering (IoT & Cyber Security
                                             including Block Chain Technology) (CSE - IoT & CS)</option>
-                                        <option value={'cse-desc'}>Computer Science & Engineering (Data Science)
+                                        <option value={'CSE-DESC'}>Computer Science & Engineering (Data Science)
                                             (CSE - D.Sc.)</option>
-                                        <option value={'csbs'}>Computer Science and Business Systems (CSBS)</option>
-                                        <option value={'ece'}>Electronics & Communication Engineering (ECE)</option>
-                                        <option value={'it'}>Information Technology (IT)</option>
-                                        <option value={'ee'}>Electrical Engineering (EE)</option>
-                                        <option value={'aeie'}>Applied Electronics & Instrumentation Engineering (AEIE)</option>
-                                        <option value={'me'}>Mechanical Engineering (ME)</option>
-                                        <option value={'ce'}>Civil Engineering (CE)</option>
-                                        <option value={'che'}>Chemical Engineering (ChE)</option>
-                                        <option value={'bt'}>Biotechnology (BT)</option>
+                                        <option value={'CSBS'}>Computer Science and Business Systems (CSBS)</option>
+                                        <option value={'ECE'}>Electronics & Communication Engineering (ECE)</option>
+                                        <option value={'IT'}>Information Technology (IT)</option>
+                                        <option value={'EE'}>Electrical Engineering (EE)</option>
+                                        <option value={'AEIE'}>Applied Electronics & Instrumentation Engineering (AEIE)</option>
+                                        <option value={'ME'}>Mechanical Engineering (ME)</option>
+                                        <option value={'CE'}>Civil Engineering (CE)</option>
+                                        <option value={'CHE'}>Chemical Engineering (ChE)</option>
+                                        <option value={'BT'}>Biotechnology (BT)</option>
                                     </select>
                                 </div>
                             </div>

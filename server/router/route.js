@@ -1,10 +1,7 @@
-
-import express, { Router } from 'express';
-import {getUsers, getUsersData} from '../controller/user-controller.js';
+import express from 'express';
+import { getUsers, getUsersData, checkUsernameAvailability, deleteUser, editUser, getUserById } from '../controller/user-controller.js';
 import multer from 'multer'
 import User from '../schema/user-schema.js'
-
-
 
 const router = express.Router();
 
@@ -48,9 +45,13 @@ router.post('/add', upload.single('image'), async (req, res) => {
 });
 
 router.get('/all', getUsers);
-
 router.post('/getUser', getUsersData);
 
+// New route to check the availability of the username
+router.post('/checkUsername', checkUsernameAvailability);
 
+router.delete('/deleteUser/:id', deleteUser);
+router.put('/editUser/:id', editUser);
+router.get('/getUser/:id', getUserById);
 
 export default router;
